@@ -1,0 +1,10 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /news_cache/{category} {
+      allow read: if true;  // Allow public read access to cached news
+      allow write: if request.auth != null;  // Only allow authenticated users to update cache
+    }
+  }
+} 
