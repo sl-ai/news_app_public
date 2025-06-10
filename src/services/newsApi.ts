@@ -20,16 +20,21 @@ export async function getTopNewsByCategory(
 
     // If cache is missing or invalid, fetch from API
     console.log(`Fetching fresh news for category: ${category}, date: ${date}`);
-    const response = await axios.get(`${BASE_URL}/top-headlines`, {
+    
+    // Convert date string to Date object for manipulation
+    const selectedDate = new Date(date);
+    const endDate = new Date(selectedDate);
+    endDate.setHours(23, 59, 59); // End of the selected day
+    
+    const response = await axios.get(`${BASE_URL}/everything`, {
       params: {
-        country: 'us',
-        category: category.toLowerCase(),
+        q: category !== 'general' ? category : 'news',
+        language: 'en',
         pageSize: 12,
         apiKey: API_KEY,
-        // Note: Free NewsAPI plan doesn't support historical data
-        // If you have a paid plan, uncomment the following line:
-        // from: date,
-        // to: date
+        from: date,
+        to: endDate.toISOString(),
+        sortBy: 'relevancy'
       },
     });
 

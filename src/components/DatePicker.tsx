@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface DatePickerProps {
   selectedDate: string;
@@ -8,21 +8,41 @@ interface DatePickerProps {
 }
 
 export default function DatePicker({ selectedDate, onDateChange }: DatePickerProps) {
-  const today = new Date().toISOString().split('T')[0];
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const [date, setDate] = useState(selectedDate);
+  
+  // Get date limits
+  const today = new Date();
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  
+  const formatDateForInput = (date: Date): string => {
+    return date.toISOString().split('T')[0];
+  };
+
+  const todayFormatted = formatDateForInput(today);
+  const thirtyDaysAgoFormatted = formatDateForInput(thirtyDaysAgo);
+
+  // Update local state when prop changes
+  useEffect(() => {
+    setDate(selectedDate);
+  }, [selectedDate]);
+
+  const handleDateChange = (newDate: string) => {
+    setDate(newDate);
+    onDateChange(newDate);
+  };
 
   return (
-    <div className="flex items-center gap-2 mb-6">
-      <label htmlFor="newsDate" className="text-white">
+    <div className="flex items-center gap-2">
+      <label htmlFor="newsDate" className="text-white whitespace-nowrap">
         Select Date:
       </label>
       <input
         type="date"
         id="newsDate"
-        value={selectedDate}
-        onChange={(e) => onDateChange(e.target.value)}
-        min={thirtyDaysAgo}
-        max={today}
+        value={date}
+        onChange={(e) => handleDateChange(e.target.value)}
+        min={thirtyDaysAgoFormatted}
+        max={todayFormatted}
         className="bg-gray-800 text-white px-3 py-2 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
       />
     </div>

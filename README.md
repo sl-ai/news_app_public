@@ -30,7 +30,7 @@ GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 
 # NextAuth
-NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_URL=http://localhost:3000?date=2024-06-08&category=technology
 NEXTAUTH_SECRET=your_nextauth_secret
 
 # News API
