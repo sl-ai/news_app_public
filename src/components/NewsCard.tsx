@@ -8,7 +8,7 @@ interface NewsCardProps {
 
 export default function NewsCard({ article }: NewsCardProps) {
   const { title, description, url, urlToImage, publishedAt, source } = article;
-  const formattedDate = new Date(publishedAt).toLocaleDateString();
+  const formattedDate = publishedAt.split('T')[0];
   const [imageError, setImageError] = useState(false);
 
   const placeholderImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzFhMWExYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM2NjY2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBpbWFnZSBhdmFpbGFibGU8L3RleHQ+PC9zdmc+';

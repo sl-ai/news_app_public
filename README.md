@@ -30,9 +30,9 @@ GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 
 # NextAuth
-NEXTAUTH_URL=http://localhost:3000?date=2024-06-08&category=technology
+NEXTAUTH_URL=http://localhost:3000?date=2025-06-08&category=technology
 NEXTAUTH_SECRET=your_nextauth_secret
-
+Firebase: https://nextjs-news-demo--shinlee-8c3d2.us-central1.hosted.app/?date=2025-06-06&category=general
 # News API
 NEXT_PUBLIC_NEWS_API_KEY=your_newsapi_key
 
