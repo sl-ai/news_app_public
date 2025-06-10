@@ -8,7 +8,7 @@ export async function getCachedNews(category: NewsCategory, date: string): Promi
   try {
     const docRef = doc(db, NEWS_COLLECTION, `${category}_${date}`);
     const docSnap = await getDoc(docRef);
-    
+    debugger
     if (docSnap.exists()) {
       const data = docSnap.data();
       return {
@@ -42,7 +42,8 @@ export function isCacheValid(lastUpdated: Date): boolean {
   const now = new Date();
   const cacheAge = now.getTime() - lastUpdated.getTime();
   // Cache is valid for 6 hours (21600000 milliseconds)
-  return cacheAge < 21600000;
+  //return cacheAge < 21600000;
+  return true
 }
 
 export function formatDate(date: Date): string {

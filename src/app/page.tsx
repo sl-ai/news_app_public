@@ -69,13 +69,13 @@ export default function Home() {
   useEffect(() => {
     async function fetchNews() {
       setLoading(true);
-      const articles = await getTopNewsByCategory(selectedCategory, selectedDate);
+      const articles = await getTopNewsByCategory(selectedCategory, searchParams.get('date'));
       setNews(articles);
       setLoading(false);
     }
 
     fetchNews();
-  }, [selectedCategory, selectedDate]);
+  }, [selectedCategory, selectedDate, searchParams]);
 
   return (
     <main className="min-h-screen bg-black text-white py-8">
