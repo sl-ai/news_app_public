@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { NewsArticle, NewsCategory } from '@/types';
 import { getTopNewsByCategory } from '@/services/newsApi';
@@ -13,7 +13,7 @@ import { GoogleAuthProvider, signInWithPopup, signOut as firebaseSignOut, onAuth
 
 const categories: NewsCategory[] = ['general', 'business', 'technology', 'sports', 'health'];
 
-export default function Home() {
+function HomeContent() {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -157,5 +157,13 @@ export default function Home() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
