@@ -1,4 +1,4 @@
-# Daily News App
+# Daily Top News App
 
 A dynamic news application that shows top 10 news articles from different categories with Google authentication support.
 
@@ -73,6 +73,7 @@ NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
 
 ## Technologies Used
 
+- React.js
 - Next.js 14
 - TypeScript
 - Tailwind CSS

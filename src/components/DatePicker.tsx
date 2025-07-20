@@ -12,7 +12,7 @@ export default function DatePicker({ selectedDate, onDateChange }: DatePickerPro
   
   // Get date limits
   const today = new Date();
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const thirtyDaysAgo = new Date('2025-06-01');
   
   const formatDateForInput = (date: Date): string => {
     return date.toISOString().split('T')[0];

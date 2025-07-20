@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession, signIn, signOut } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { NewsArticle, NewsCategory } from '@/types';
 import { getTopNewsByCategory } from '@/services/newsApi';
@@ -9,21 +8,23 @@ import { formatDate } from '@/services/databaseService';
 import NewsCard from '@/components/NewsCard';
 import CategoryFilter from '@/components/CategoryFilter';
 import DatePicker from '@/components/DatePicker';
+import { auth } from '@/lib/firebase';
+import { GoogleAuthProvider, signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged, User } from 'firebase/auth';
 
 const categories: NewsCategory[] = ['general', 'business', 'technology', 'sports', 'health'];
 
 export default function Home() {
-  const { data: session } = useSession();
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   // Get URL parameters or use defaults
   const urlDate = searchParams.get('date');
   const urlCategory = searchParams.get('category') as NewsCategory;
-  
+
   const initialDate = urlDate && isValidDate(urlDate) ? urlDate : formatDate(new Date());
   const initialCategory = urlCategory && isValidCategory(urlCategory) ? urlCategory : 'general';
-  
+
   const [selectedCategory, setSelectedCategory] = useState<NewsCategory>(initialCategory);
   const [selectedDate, setSelectedDate] = useState(initialDate);
   const [news, setNews] = useState<NewsArticle[]>([]);
@@ -43,14 +44,14 @@ export default function Home() {
   // Update URL with both parameters
   const updateURL = (params: { date?: string; category?: string }) => {
     const newParams = new URLSearchParams(searchParams);
-    
+
     if (params.date) {
       newParams.set('date', params.date);
     }
     if (params.category) {
       newParams.set('category', params.category);
     }
-    
+
     router.push(`?${newParams.toString()}`);
   };
 
@@ -67,6 +68,13 @@ export default function Home() {
   };
 
   useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
     async function fetchNews() {
       setLoading(true);
       const articles = await getTopNewsByCategory(selectedCategory, searchParams.get('date'));
@@ -77,17 +85,37 @@ export default function Home() {
     fetchNews();
   }, [selectedCategory, selectedDate, searchParams]);
 
+  const handleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      alert('Sign in failed.');
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await firebaseSignOut(auth);
+    } catch (error) {
+      alert('Sign out failed.');
+    }
+  };
+
   return (
     <main className="min-h-screen bg-black text-white py-8">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-white">Daily Top News</h1>
           <div>
-            {session ? (
+            {!user && (
+              <div className="mb-2 text-yellow-400 text-sm text-right">Login required to view news content.</div>
+            )}
+            {user ? (
               <div className="flex items-center gap-4">
-                <span className="text-white">Welcome, {session.user?.name}</span>
+                <span className="text-white">Welcome, {user.displayName || user.email}</span>
                 <button
-                  onClick={() => signOut()}
+                  onClick={handleSignOut}
                   className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
                 >
                   Sign Out
@@ -95,7 +123,7 @@ export default function Home() {
               </div>
             ) : (
               <button
-                onClick={() => signIn('google')}
+                onClick={handleSignIn}
                 className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
               >
                 Sign in with Google
