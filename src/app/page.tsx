@@ -8,13 +8,14 @@ import { formatDate } from '@/services/databaseService';
 import NewsCard from '@/components/NewsCard';
 import CategoryFilter from '@/components/CategoryFilter';
 import DatePicker from '@/components/DatePicker';
-import { auth } from '@/lib/firebase';
+import { getAuthInstance } from '@/lib/firebase';
 import { GoogleAuthProvider, signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged, User } from 'firebase/auth';
 
 const categories: NewsCategory[] = ['general', 'business', 'technology', 'sports', 'health'];
 
 function HomeContent() {
   const [user, setUser] = useState<User | null>(null);
+  const [auth, setAuth] = useState<any>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -67,12 +68,27 @@ function HomeContent() {
     updateURL({ category: newCategory });
   };
 
+  // Initialize Firebase auth
   useEffect(() => {
+    async function initAuth() {
+      try {
+        const authInstance = await getAuthInstance();
+        setAuth(authInstance);
+      } catch (error) {
+        console.error('Failed to initialize Firebase auth:', error);
+      }
+    }
+    initAuth();
+  }, []);
+
+  useEffect(() => {
+    if (!auth) return;
+    
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
     });
     return () => unsubscribe();
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
     async function fetchNews() {
@@ -86,6 +102,8 @@ function HomeContent() {
   }, [selectedCategory, selectedDate, searchParams]);
 
   const handleSignIn = async () => {
+    if (!auth) return;
+    
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
@@ -95,6 +113,8 @@ function HomeContent() {
   };
 
   const handleSignOut = async () => {
+    if (!auth) return;
+    
     try {
       await firebaseSignOut(auth);
     } catch (error) {

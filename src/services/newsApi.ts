@@ -2,8 +2,38 @@ import axios from 'axios';
 import { NewsArticle, NewsCategory } from '@/types';
 import { getCachedNews, cacheNews, isCacheValid, formatDate } from './databaseService';
 
-const API_KEY = process.env.NEXT_PUBLIC_NEWS_API_KEY;
 const BASE_URL = 'https://newsapi.org/v2';
+
+// Function to get API key from environment or Secret Manager
+async function getNewsAPIKey(): Promise<string> {
+  // Check if we're in development mode and use environment variable as fallback
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  
+  if (isDevelopment && process.env.NEXT_PUBLIC_NEWS_API_KEY) {
+    console.log('Using environment variable for News API key (development mode)');
+    return process.env.NEXT_PUBLIC_NEWS_API_KEY;
+  }
+
+  try {
+    // Try to fetch from API (which uses Secret Manager on server side)
+    const response = await fetch('/api/config/firebase');
+    if (!response.ok) {
+      throw new Error('Failed to fetch config from API');
+    }
+    const config = await response.json();
+    return config.newsAPIKey || '';
+  } catch (error) {
+    console.error('Failed to fetch News API key from API:', error);
+    
+    // Fallback to environment variable if API fails
+    if (process.env.NEXT_PUBLIC_NEWS_API_KEY) {
+      console.log('Falling back to environment variable for News API key');
+      return process.env.NEXT_PUBLIC_NEWS_API_KEY;
+    }
+    
+    throw new Error('Unable to load News API key from API or environment variables');
+  }
+}
 
 export async function getTopNewsByCategory(
   category: NewsCategory,
@@ -33,6 +63,9 @@ export async function getTopNewsByCategory(
 
     // If cache is missing or invalid, fetch from API
     console.log(`Fetching fresh news for category: ${category}, date: ${targetDate}`);
+    
+    // Get API key
+    const API_KEY = await getNewsAPIKey();
     
     // Convert date string to Date object for manipulation
     const selectedDate = new Date(targetDate);

@@ -1,4 +1,4 @@
-import { db } from '@/lib/firebase';
+import { getDbInstance } from '@/lib/firebase';
 import { collection, doc, getDoc, setDoc, Timestamp } from 'firebase/firestore';
 import { NewsArticle, NewsCategory, NewsCache } from '@/types';
 
@@ -6,9 +6,10 @@ const NEWS_COLLECTION = 'news_cache';
 
 export async function getCachedNews(category: NewsCategory, date: string): Promise<NewsCache | null> {
   try {
+    const db = await getDbInstance();
     const docRef = doc(db, NEWS_COLLECTION, `${category}_${date}`);
     const docSnap = await getDoc(docRef);
-    debugger
+    
     if (docSnap.exists()) {
       const data = docSnap.data();
       return {
@@ -26,6 +27,7 @@ export async function getCachedNews(category: NewsCategory, date: string): Promi
 
 export async function cacheNews(category: NewsCategory, date: string, articles: NewsArticle[]): Promise<void> {
   try {
+    const db = await getDbInstance();
     const docRef = doc(db, NEWS_COLLECTION, `${category}_${date}`);
     await setDoc(docRef, {
       articles,

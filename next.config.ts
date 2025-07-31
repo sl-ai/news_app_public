@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
@@ -16,6 +16,19 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  webpack: (config: any, { isServer }: { isServer: boolean }) => {
+    if (!isServer) {
+      // Don't bundle server-only modules on the client side
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        crypto: false,
+      };
+    }
+    return config;
   },
 };
 
