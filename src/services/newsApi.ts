@@ -40,8 +40,10 @@ export async function getTopNewsByCategory(
   urlDate?: string | null
 ): Promise<NewsArticle[]> {
   try {
-    const currentDate = formatDate(new Date());
-    const targetDate = urlDate || currentDate;
+    let currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() - 1)
+    const currentDateFormatted = formatDate(currentDate)
+    const targetDate = urlDate || currentDateFormatted;
 
     // First, try to get news from cache using the URL date
     const cachedNews = await getCachedNews(category, targetDate);
@@ -53,8 +55,8 @@ export async function getTopNewsByCategory(
 
     // If no valid cache with URL date, and no URL date was provided,
     // try getting today's cached news
-    if (!urlDate && targetDate !== currentDate) {
-      const todaysCachedNews = await getCachedNews(category, currentDate);
+    if (!urlDate && targetDate !== currentDateFormatted) {
+      const todaysCachedNews = await getCachedNews(category, currentDateFormatted);
       if (todaysCachedNews && isCacheValid(todaysCachedNews.lastUpdated)) {
         console.log(`Using today's cached news for category: ${category}`);
         return todaysCachedNews.articles;
@@ -76,7 +78,7 @@ export async function getTopNewsByCategory(
       params: {
         q: category !== 'general' ? category : 'news',
         language: 'en',
-        pageSize: 12,
+        pageSize: 13,
         apiKey: API_KEY,
         from: targetDate,
         to: endDate.toISOString(),

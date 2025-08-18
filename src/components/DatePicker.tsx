@@ -11,8 +11,9 @@ export default function DatePicker({ selectedDate, onDateChange }: DatePickerPro
   const [date, setDate] = useState(selectedDate);
   
   // Get date limits
-  const today = new Date();
-  const thirtyDaysAgo = new Date('2025-06-01');
+  let today = new Date();
+  today.setDate(today.getDate() - 1)
+  const thirtyDaysAgo = new Date(Date.now() - 86400000 * 30); 
   
   const formatDateForInput = (date: Date): string => {
     return date.toISOString().split('T')[0];
@@ -32,8 +33,8 @@ export default function DatePicker({ selectedDate, onDateChange }: DatePickerPro
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <label htmlFor="newsDate" className="text-white whitespace-nowrap">
+    <div className="flex text-white items-center gap-2">
+      <label htmlFor="newsDate" className="whitespace-nowrap">
         Select Date:
       </label>
       <input
@@ -43,7 +44,7 @@ export default function DatePicker({ selectedDate, onDateChange }: DatePickerPro
         onChange={(e) => handleDateChange(e.target.value)}
         min={thirtyDaysAgoFormatted}
         max={todayFormatted}
-        className="bg-gray-800 text-white px-3 py-2 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+        className="bg-gray-800 px-3 py-2 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
       />
     </div>
   );
