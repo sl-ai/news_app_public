@@ -1,9 +1,10 @@
 import { getTopNewsByCategory } from '@/services/newsApi'
 import { NewsCategory } from '@/types'
+import axios from 'axios'
 
 // Mock axios
 jest.mock('axios')
-const mockAxios = require('axios')
+const mockAxios = axios as jest.Mocked<typeof axios>
 
 // Mock databaseService
 jest.mock('@/services/databaseService', () => ({
@@ -49,7 +50,7 @@ describe('newsApi', () => {
       mockAxios.get.mockResolvedValue(mockResponse)
 
       // Mock cache functions
-      const { getCachedNews, isCacheValid, cacheNews } = require('@/services/databaseService')
+      const { getCachedNews, isCacheValid, cacheNews } = jest.requireMock('@/services/databaseService')
       getCachedNews.mockResolvedValue(null)
       isCacheValid.mockReturnValue(false)
 
@@ -83,7 +84,7 @@ describe('newsApi', () => {
       ]
 
       // Mock cache functions
-      const { getCachedNews, isCacheValid } = require('@/services/databaseService')
+      const { getCachedNews, isCacheValid } = jest.requireMock('@/services/databaseService')
       getCachedNews.mockResolvedValue({
         articles: mockCachedArticles,
         lastUpdated: new Date().toISOString(),
@@ -109,7 +110,7 @@ describe('newsApi', () => {
       ]
 
       // Mock cache functions
-      const { getCachedNews, isCacheValid } = require('@/services/databaseService')
+      const { getCachedNews, isCacheValid } = jest.requireMock('@/services/databaseService')
       getCachedNews.mockResolvedValue({
         articles: mockExpiredArticles,
         lastUpdated: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
@@ -126,7 +127,7 @@ describe('newsApi', () => {
 
     it('should return empty array when no cache and API fails', async () => {
       // Mock cache functions
-      const { getCachedNews } = require('@/services/databaseService')
+      const { getCachedNews } = jest.requireMock('@/services/databaseService')
       getCachedNews.mockResolvedValue(null)
 
       // Mock API failure
@@ -142,7 +143,7 @@ describe('newsApi', () => {
         data: { articles: [] },
       })
 
-      const { getCachedNews, isCacheValid } = require('@/services/databaseService')
+      const { getCachedNews, isCacheValid } = jest.requireMock('@/services/databaseService')
       getCachedNews.mockResolvedValue(null)
       isCacheValid.mockReturnValue(false)
 
@@ -163,7 +164,7 @@ describe('newsApi', () => {
         data: { articles: [] },
       })
 
-      const { getCachedNews, isCacheValid } = require('@/services/databaseService')
+      const { getCachedNews, isCacheValid } = jest.requireMock('@/services/databaseService')
       getCachedNews.mockResolvedValue(null)
       isCacheValid.mockReturnValue(false)
 
