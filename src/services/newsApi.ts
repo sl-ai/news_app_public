@@ -40,7 +40,7 @@ export async function getTopNewsByCategory(
   urlDate?: string | null
 ): Promise<NewsArticle[]> {
   try {
-    let currentDate = new Date();
+    const currentDate = new Date();
     currentDate.setDate(currentDate.getDate() - 1)
     const currentDateFormatted = formatDate(currentDate)
     const targetDate = urlDate || currentDateFormatted;

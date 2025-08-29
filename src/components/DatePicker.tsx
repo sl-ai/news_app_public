@@ -11,7 +11,7 @@ export default function DatePicker({ selectedDate, onDateChange }: DatePickerPro
   const [date, setDate] = useState(selectedDate);
   
   // Get date limits
-  let today = new Date();
+  const today = new Date();
   today.setDate(today.getDate() - 1)
   const thirtyDaysAgo = new Date(Date.now() - 86400000 * 30); 
   
