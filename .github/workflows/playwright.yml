@@ -33,6 +33,11 @@ jobs:
       env:
         NODE_ENV: test
 
+    - name: Run unit tests with coverage
+      run: npm run test:unit:coverage
+      env:
+        NODE_ENV: test
+
     - name: Run Playwright tests
       run: npm test
       env:
@@ -42,8 +47,9 @@ jobs:
     - uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: playwright-report
+        name: test-reports
         path: |
           playwright-report/
           test-results/
-        retention-days: 30
+          coverage/
+        retention-days: 10
