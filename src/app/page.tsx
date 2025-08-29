@@ -23,7 +23,8 @@ function HomeContent() {
   const urlDate = searchParams.get('date');
   const urlCategory = searchParams.get('category') as NewsCategory;
 
-  const initialDate = urlDate && isValidDate(urlDate) ? urlDate : formatDate(new Date());
+  const defaultDate = '2025-08-01'; // Default date: 8/1/2025
+  const initialDate = urlDate && isValidDate(urlDate) ? urlDate : defaultDate;
   const initialCategory = urlCategory && isValidCategory(urlCategory) ? urlCategory : 'general';
 
   const [selectedCategory, setSelectedCategory] = useState<NewsCategory>(initialCategory);

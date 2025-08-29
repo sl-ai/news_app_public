@@ -10,17 +10,16 @@ interface DatePickerProps {
 export default function DatePicker({ selectedDate, onDateChange }: DatePickerProps) {
   const [date, setDate] = useState(selectedDate);
   
-  // Get date limits
-  const today = new Date();
-  today.setDate(today.getDate() - 1)
-  const thirtyDaysAgo = new Date(Date.now() - 86400000 * 30); 
+  // Set fixed date range: 8/1/2025 to 8/31/2025
+  const minDate = new Date('2025-08-01');
+  const maxDate = new Date('2025-08-31');
   
   const formatDateForInput = (date: Date): string => {
     return date.toISOString().split('T')[0];
   };
 
-  const todayFormatted = formatDateForInput(today);
-  const thirtyDaysAgoFormatted = formatDateForInput(thirtyDaysAgo);
+  const minDateFormatted = formatDateForInput(minDate);
+  const maxDateFormatted = formatDateForInput(maxDate);
 
   // Update local state when prop changes
   useEffect(() => {
@@ -42,8 +41,8 @@ export default function DatePicker({ selectedDate, onDateChange }: DatePickerPro
         id="newsDate"
         value={date}
         onChange={(e) => handleDateChange(e.target.value)}
-        min={thirtyDaysAgoFormatted}
-        max={todayFormatted}
+        min={minDateFormatted}
+        max={maxDateFormatted}
         className="bg-gray-800 px-3 py-2 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
       />
     </div>

@@ -39,11 +39,10 @@ export async function getTopNewsByCategory(
   category: NewsCategory,
   urlDate?: string | null
 ): Promise<NewsArticle[]> {
+  const defaultDate = '2025-08-01'; // Default date: 7/1/2025
+  
   try {
-    const currentDate = new Date();
-    currentDate.setDate(currentDate.getDate() - 1)
-    const currentDateFormatted = formatDate(currentDate)
-    const targetDate = urlDate || currentDateFormatted;
+    const targetDate = urlDate || defaultDate;
 
     // First, try to get news from cache using the URL date
     const cachedNews = await getCachedNews(category, targetDate);
@@ -54,12 +53,12 @@ export async function getTopNewsByCategory(
     }
 
     // If no valid cache with URL date, and no URL date was provided,
-    // try getting today's cached news
-    if (!urlDate && targetDate !== currentDateFormatted) {
-      const todaysCachedNews = await getCachedNews(category, currentDateFormatted);
-      if (todaysCachedNews && isCacheValid(todaysCachedNews.lastUpdated)) {
-        console.log(`Using today's cached news for category: ${category}`);
-        return todaysCachedNews.articles;
+    // try getting default date's cached news
+    if (!urlDate) {
+      const defaultCachedNews = await getCachedNews(category, defaultDate);
+      if (defaultCachedNews && isCacheValid(defaultCachedNews.lastUpdated)) {
+        console.log(`Using default date's cached news for category: ${category}`);
+        return defaultCachedNews.articles;
       }
     }
 
@@ -96,7 +95,7 @@ export async function getTopNewsByCategory(
     console.error('Error fetching news:', error);
     
     // If API call fails but we have cached news, return it regardless of age
-    const cachedNews = await getCachedNews(category, urlDate || formatDate(new Date()));
+    const cachedNews = await getCachedNews(category, urlDate || defaultDate);
     if (cachedNews) {
       console.log(`Using expired cache for category: ${category} due to API error`);
       return cachedNews.articles;
