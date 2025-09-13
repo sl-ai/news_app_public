@@ -105,6 +105,120 @@ NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
 - **No Hardcoded Secrets**: All sensitive configuration is externalized
 - **IAM-based Access Control**: Secret access is controlled via Google Cloud IAM
 
+## Testing & Automation
+
+This project includes comprehensive testing and automation setup to ensure code quality and reliability.
+
+### Testing Framework
+
+#### Unit Tests (Jest + React Testing Library)
+- **Location**: `src/__tests__/`
+- **Coverage**: Components, services, and utilities
+- **Test Files**:
+  - `NewsCard.test.tsx` - News card component functionality
+  - `CategoryFilter.test.tsx` - Category filtering logic
+  - `DatePicker.test.tsx` - Date picker interactions
+  - `newsApi.test.ts` - API service layer
+
+**Running Unit Tests:**
+```bash
+# Run all unit tests
+npm run test:unit
+
+# Run with coverage report
+npm run test:unit:coverage
+
+# Watch mode for development
+npm run test:unit:watch
+```
+
+#### End-to-End Tests (Playwright)
+- **Location**: `tests/`
+- **Coverage**: Full user workflows and browser compatibility
+- **Test Files**:
+  - `news-tiles.spec.ts` - News display and authentication flows
+
+**Running E2E Tests:**
+```bash
+# Run all tests (headless)
+npm test
+
+# Interactive UI mode
+npm run test:ui
+
+# Run with browser visible
+npm run test:headed
+```
+
+### Continuous Integration/Deployment
+
+#### GitHub Actions Workflow
+- **File**: `.github/workflows/playwright.yml`
+- **Triggers**: Push/PR to main/master branches
+- **Process**:
+  1. Node.js 18 setup with npm caching
+  2. Dependency installation
+  3. Application build
+  4. Unit test execution with coverage
+  5. Test report artifact upload
+
+#### Coverage Requirements
+- **Minimum Thresholds**: 50% for branches, functions, lines, statements
+- **Report Generation**: HTML and LCOV formats
+- **Artifact Storage**: 10-day retention in GitHub Actions
+
+#### Browser Compatibility
+- **Supported Browsers**: Chrome, Firefox, Safari
+- **Test Environment**: Ubuntu Latest (GitHub Actions)
+- **Local Development**: Cross-platform support
+
+### Quality Assurance
+
+#### Code Quality Tools
+- **ESLint**: Code linting and style enforcement
+- **TypeScript**: Type safety and compile-time checks
+- **Prettier**: Code formatting (via ESLint integration)
+
+#### Testing Best Practices
+- **Unit Tests**: Focus on component behavior and service logic
+- **E2E Tests**: Verify complete user workflows
+- **Mocking Strategy**: External APIs and dependencies mocked
+- **Accessibility**: ARIA attributes and keyboard navigation tested
+
+#### Performance Monitoring
+- **Build Optimization**: Next.js production builds
+- **Bundle Analysis**: Automatic size monitoring
+- **Test Performance**: Parallel test execution
+
+### Development Workflow
+
+#### Local Development
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run all tests
+npm run test:unit && npm test
+
+# Build for production
+npm run build
+```
+
+#### Pre-commit Checklist
+1. Run unit tests: `npm run test:unit`
+2. Run linting: `npm run lint`
+3. Build application: `npm run build`
+4. Run E2E tests: `npm test`
+
+#### CI/CD Pipeline
+- **Automatic Testing**: Every push and PR
+- **Build Verification**: Ensures production readiness
+- **Artifact Management**: Test reports and coverage data
+- **Deployment Ready**: Passes all checks before merge
+
 ## Technologies Used
 
 - React.js
@@ -115,6 +229,9 @@ NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
 - NextAuth.js
 - News API
 - Google Secret Manager
+- **Testing**: Jest, React Testing Library, Playwright
+- **CI/CD**: GitHub Actions
+- **Quality**: ESLint, TypeScript
 
 ## License
 
