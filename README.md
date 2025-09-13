@@ -1,6 +1,8 @@
 # Daily Top News App
 
-A dynamic news application that shows top 10 news articles from different categories with Google authentication support.
+A dynamic news application that shows top news articles from different categories with Google authentication support. Built with ReactJS, NextJS on GCP.
+![App Screenshot](https://github.com/sl-ai/news_app_public/raw/main/public/topNews.png)
+
 
 ## Features
 
